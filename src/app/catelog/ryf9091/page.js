@@ -198,11 +198,11 @@ export default function CatelogExplorer() {
       <div style={{display: "flex", justifyContent: 'center', alignItems: 'center', flexDirection:'column', padding: '5%'}}>
         <select value={currentRealm} onChange={realmChanged}>
             <option value={"none"} selected disabled hidden>Select a realm</option>
-            {realms.map(realm => <option value={realm}>{realm}</option>)}
+            {realms.map(realm => <option key={realm}value={realm}>{realm}</option>)}
         </select>
         <select value={currentFreq} onChange={freqChanged}>
             <option value={"none"} selected disabled hidden>Select a frequency</option>
-            {realmFreqs.map(freq => <option value={freq}>{freq}</option>)}
+            {realmFreqs.map(freq => <option key={freq} value={freq}>{freq}</option>)}
         </select>
         <div class="chart-container" style={{height:"30vh", width:"100%"}}>
             {(currentFreq && currentFreq != 'none') && <Scatter ref={chartRef} options={options} data={{datasets: []}} />}
