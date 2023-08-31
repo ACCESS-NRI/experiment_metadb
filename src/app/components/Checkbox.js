@@ -1,7 +1,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import variableNameMapping  from "../catelog/VariableData/variable_full_name_mapping.json"
 const Checkbox = ({ label, checked = false, onChange, color, variables }) => (
     <div style={{margin: 10}}>
         <button style={{
@@ -16,7 +16,12 @@ const Checkbox = ({ label, checked = false, onChange, color, variables }) => (
         }} 
             onClick={() => onChange(label, checked)}/>
         <span>{label}</span>
-        {checked && variables.map(variable => <p key={variable} style={{fontSize:11, marginLeft:34, marginTop:3, marginBottom:0}}>{variable}</p>)}
+        {checked && 
+            variables.map(variable => 
+            <p key={variable} 
+                style={{fontSize:11, marginLeft:34, marginTop:3, marginBottom:0}}>
+                    {`${variable}:     ${variableNameMapping[variable]}`}
+            </p>)}
     </div>
   
 );
