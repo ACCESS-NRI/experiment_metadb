@@ -20,7 +20,7 @@ const Checkbox = ({ label, checked = false, onChange, color, variables }) => (
             variables.map(variable => 
             <p key={variable} 
                 style={{fontSize:11, marginLeft:34, marginTop:3, marginBottom:0}}>
-                    {`${variable}:     ${variableNameMapping[variable]}`}
+                    <strong>{variable}</strong> : {variableNameMapping[variable]}
             </p>)}
     </div>
   
