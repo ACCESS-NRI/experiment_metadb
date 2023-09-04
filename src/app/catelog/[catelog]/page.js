@@ -11,12 +11,14 @@ import {
     Tooltip,
     CategoryScale,
   } from "chart.js";
-  import 'chartjs-adapter-date-fns';
-  import annotationPlugin from 'chartjs-plugin-annotation';
-  import Slider, { Range } from 'rc-slider';
-  import 'rc-slider/assets/index.css';
+import 'chartjs-adapter-date-fns';
+import annotationPlugin from 'chartjs-plugin-annotation';
+import Slider, { Range } from 'rc-slider';
+import 'rc-slider/assets/index.css';
+import TagsInput from 'react-tagsinput'
+import 'react-tagsinput/react-tagsinput.css'
 
-  ChartJS.register(
+ChartJS.register(
     TimeScale,
     LinearScale,
     PointElement,
@@ -25,23 +27,27 @@ import {
     Tooltip,
     annotationPlugin,
     CategoryScale
-  );
+);
 import { useEffect, useRef, useState } from "react"
 //import catelogData  from "../VariableData/ryf9091_relam_grouped.json"
 import Checkbox from "@/app/components/Checkbox";
 
 export default function CatelogExplorer({params}) {
     let chartOptions
+
     const [catelog, setCatelog] = useState()
     const [plotData, setPlotData] = useState([]);
     const [freqAxis, setFreqAxis] = useState();
     const [freqVariables, setFreqVariable] = useState([])
-    const chartRef = useRef(null);
     const [currentRealm, setCurrentRealm] = useState([])
     const [currentFreq, setCurrentFreq] = useState()
     const [realmFreqs, setRealmFreqs] = useState([])
     const [realms, setRealms] = useState([])
+    const [searchVarArray, setSearchVarArray] = useState([])
+    const [searchResults , setSearchResults] = useState({})
 
+    const chartRef = useRef(null);
+    const searchRef = useRef(null);
     useEffect(() => {
         getCatelog()
     },[])
@@ -57,8 +63,12 @@ export default function CatelogExplorer({params}) {
     },[catelog])
 
     useEffect(() => {
-        plotVariable(currentFreq)
+        plotVariable()
     }, [freqVariables]);
+
+    useEffect(() => {
+        plotVariable()
+    }, [searchResults])
 
     useEffect(() => {
        plotFrequency(currentFreq)
@@ -108,25 +118,26 @@ export default function CatelogExplorer({params}) {
         }
     }
 
-    const plotVariable = (freq) => {
+    const plotVariable = () => {
         setPlotData([])
         if (catelog) {
             const realmData = catelog["realms"]
-            for (const grp of freqVariables) {
-                if(grp.isVisible) {
-                    for (const dates of realmData[currentRealm][freq][grp.name]["timestamp"]) {
+            if (Object.keys(searchResults).length !== 0) {
+                for (const group in searchResults) {
+                    const grp = searchResults[group]
+                    for (const dates of realmData[currentRealm][currentFreq][group]["timestamp"]) {
                         setPlotData(data => [...data, {
                             type: 'line',
                             mode: 'horizontal',
                             xMin: dates[0],
                             xMax: dates[1],
-                            yMin: grp.name,
-                            yMax: grp.name,
+                            yMin: group,
+                            yMax: group,
                             //yScaleID: freq,
                             borderColor: grp.color,
                             label: {
                                 display: false,
-                                content: grp.name,
+                                content: group,
                                 backgroundColor: "black",
                                 color: "white",
                             },
@@ -139,6 +150,37 @@ export default function CatelogExplorer({params}) {
                                 return true;
                             }
                         }])
+                    }
+                }
+            } else {
+                for (const grp of freqVariables) {
+                    if(grp.isVisible) {
+                        for (const dates of realmData[currentRealm][currentFreq][grp.name]["timestamp"]) {
+                            setPlotData(data => [...data, {
+                                type: 'line',
+                                mode: 'horizontal',
+                                xMin: dates[0],
+                                xMax: dates[1],
+                                yMin: grp.name,
+                                yMax: grp.name,
+                                //yScaleID: freq,
+                                borderColor: grp.color,
+                                label: {
+                                    display: false,
+                                    content: grp.name,
+                                    backgroundColor: "black",
+                                    color: "white",
+                                },
+                                enter({element}, event) {
+                                    element.label.options.display = true;
+                                    return true;
+                                },
+                                leave({element}, event) {
+                                    element.label.options.display = false;
+                                    return true;
+                                }
+                            }])
+                        }
                     }
                 }
             }
@@ -157,6 +199,43 @@ export default function CatelogExplorer({params}) {
         })
         setFreqVariable(newFreqVariables)
     }
+
+    const getVariableGroup = (searchVar, realm, freq) => {
+        try {
+            const realmData = catelog["realms"]
+            for (const group in realmData[realm][freq]) {
+                for (const variable of realmData[realm][freq][group].variables) {
+                    if (variable === searchVar) {
+                        return group
+                    }
+                }
+            }
+            return null
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    //TODO: Optimise the  search by search only for changed search array
+    const handleSearchAdd = (newsearchVarArray, changedsearchVarArray, changedIndexes) => {
+        setSearchVarArray(newsearchVarArray);
+        let result = {}
+        for (const searchVar of newsearchVarArray) {
+            const group = getVariableGroup(searchVar, currentRealm, currentFreq)
+            if (!group) {
+                continue
+            }
+            if (result[group]) {
+                result[group].variables.push(searchVar)
+            } else {
+                result[group] = {}
+                result[group]["color"] = randomColorGenerator()
+                result[group]["variables"] = [searchVar]
+            }   
+        }
+        setSearchResults(result)
+    };
+    
 
     const addDays = (date, days) => {
         let result = new Date(date);
@@ -177,11 +256,13 @@ export default function CatelogExplorer({params}) {
     const realmChanged = (event) => {
         const realm = event.target.value
         setCurrentRealm(realm)
+        setSearchVarArray([])
         setRealmFreqs(Object.keys(catelog['realms'][realm]))
         setCurrentFreq("none")
     }
 
     const freqChanged = (event) => {
+        setSearchVarArray([])
         setCurrentFreq(event.target.value)
     }
 
@@ -215,6 +296,16 @@ export default function CatelogExplorer({params}) {
     
     }
 
+    const renderCheckbox = (name, color, variables, isVisible, handleCheckboxChange, index) => {
+        return (
+            <Checkbox label={name} 
+            key={name + " " + index} 
+            color={color}
+            variables={variables}
+            checked={isVisible} onChange={handleCheckboxChange} />
+        )
+    }
+
     return (
       <div style={{display: "flex", justifyContent: 'center', alignItems: 'center', flexDirection:'column', padding: '5%'}}>
         <select value={currentRealm || "none"} onChange={realmChanged}>
@@ -225,6 +316,15 @@ export default function CatelogExplorer({params}) {
             <option value={"none"} selected disabled hidden>Select a frequency</option>
             {realmFreqs.map(freq => <option key={freq} value={freq}>{freq}</option>)}
         </select>
+        <TagsInput 
+            disabled={!currentFreq}
+            inputProps={{
+                className: 'react-tagsinput-input',
+                placeholder: 'Search'
+            }}
+            ref={searchRef}
+            value={searchVarArray} 
+            onChange={handleSearchAdd} />
         <div class="chart-container" style={{height:"30vh", width:"100%"}}>
             {(currentFreq && currentFreq != 'none') && <Scatter ref={chartRef} options={chartOptions} data={{datasets: []}} />}
             {(currentFreq && currentFreq != 'none') && <Slider range
@@ -233,13 +333,18 @@ export default function CatelogExplorer({params}) {
             />}
         </div>
         <div style={{ marginTop: "20px", columnGap: "20px", width: "100%", display:"grid", gridTemplateColumns: "auto-fill max-content"}}>
-            {freqVariables.map((grp,i) => 
-                <Checkbox label={grp.name} 
-                    key={grp.name + " " + i} 
-                    color={grp.color}
-                    variables={grp.variables}
-                    checked={grp.isVisible} onChange={handleCheckboxChange} />
-            )}
+            {Object.keys(searchResults).length === 0 ? 
+                freqVariables.map((grp, i) => 
+                    renderCheckbox(grp.name, grp.color, grp.variables, grp.isVisible, handleCheckboxChange, i)):
+                    Object.keys(searchResults).map((grp, i) => {
+                        return (renderCheckbox(
+                            grp, 
+                            searchResults[grp].color, 
+                            searchResults[grp].variables, 
+                            true,
+                            () => {}, i
+                        ))})
+            }
         </div>
         
       </div>
