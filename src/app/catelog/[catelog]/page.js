@@ -308,7 +308,7 @@ export default function CatelogExplorer({params}) {
 
     return (
       <div style={{display: "flex", justifyContent: 'center', alignItems: 'center', flexDirection:'column', padding: '5%'}}>
-        <p style={{marginBottom: '30px', fontSize: 22, fontWeight: 700}}>{catelog["name"] || ""}</p>
+        <p style={{marginBottom: '30px', fontSize: 22, fontWeight: 700}}>{catelog ? catelog["name"] : ""}</p>
         <select value={currentRealm || "none"} onChange={realmChanged}>
             <option value={"none"} selected disabled hidden>Select a realm</option>
             {realms.map(realm => <option key={realm}value={realm}>{realm}</option>)}
