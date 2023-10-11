@@ -33,3 +33,8 @@ frontend/.vercel
 # typescript
 frontend/*.tsbuildinfo
 frontend/next-env.d.ts
+.vercel
+
+/run_summary/.vscode
+
+/variable_info/__pycache__
