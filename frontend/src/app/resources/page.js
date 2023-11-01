@@ -51,16 +51,16 @@ export default function ResourceUtilisation() {
       pbs_logs = pbs_logs.fields
       const runLengthDays = jobData.timestamp[RUN_LENGTH_DAYS]
       const walltimeYPD = 0.0658 * runLengthDays/pbs_logs[WALLTIME_IN_HRS]
-      const memoryPerYear = pbs_logs[MEMEORY_USED_IN_GB] * 365/runLengthDays
+      const storagePerYear = jobData[STORAGE_IN_GB] * 365/runLengthDays
       const serviceUnitsPerYear = pbs_logs[SERVICE_UNITS] * 365/runLengthDays
       jobPlotData.walltime.data.push(walltimeYPD)
-      jobPlotData.memoryUsed.data.push(memoryPerYear)
+      jobPlotData.memoryUsed.data.push(pbs_logs[MEMEORY_USED_IN_GB])
       jobPlotData.serviceUnits.data.push(serviceUnitsPerYear)
-      jobPlotData.storage.data.push(jobData[STORAGE_IN_GB])
+      jobPlotData.storage.data.push(storagePerYear)
       jobPlotData.walltime.avg += walltimeYPD
-      jobPlotData.memoryUsed.avg += memoryPerYear
+      jobPlotData.memoryUsed.avg += pbs_logs[MEMEORY_USED_IN_GB]
       jobPlotData.serviceUnits.avg += serviceUnitsPerYear
-      jobPlotData.storage.avg += jobData[STORAGE_IN_GB]
+      jobPlotData.storage.avg += storagePerYear
       years.push(jobData.timestamp[END_DATE])
     }
 
@@ -78,7 +78,7 @@ export default function ResourceUtilisation() {
           avg: jobPlotData.walltime.avg
         },
         {
-          label: "Memory used per year",
+          label: "Memory used",
           data: jobPlotData.memoryUsed.data.map(data => data/jobPlotData.memoryUsed.avg),
           borderColor: "rgba(0,255,0)",
           avg: jobPlotData.memoryUsed.avg
@@ -90,7 +90,7 @@ export default function ResourceUtilisation() {
           avg: jobPlotData.serviceUnits.avg
         },
         {
-          label: "Storage in GB",
+          label: "Storage in GB per year",
           data: jobPlotData.storage.data.map(data => data/jobPlotData.storage.avg),
           borderColor: "rgba(0,0,0)",
           avg: jobPlotData.storage.avg
