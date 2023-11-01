@@ -36,5 +36,7 @@ frontend/next-env.d.ts
 .vercel
 
 /run_summary/.vscode
+/run_summary/__pycache__
+/run_summary/models/__pycache__
 
 /variable_info/__pycache__

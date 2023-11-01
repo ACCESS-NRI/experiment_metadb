@@ -2,7 +2,7 @@ from mongoengine import (
     Document, EmbeddedDocument, StringField, ListField, ReferenceField, IntField, DateTimeField,
     FloatField, EmbeddedDocumentField, DynamicDocument, DateField, DictField, DynamicEmbeddedDocument )
 
-class JobRunTimestamp(Document):
+class JobRunTimestamp(EmbeddedDocument):
     end_date = DateTimeField()
     run_length_in_days = FloatField()
     run_length_in_seconds = FloatField()
@@ -10,7 +10,7 @@ class JobRunTimestamp(Document):
     start_time = DateTimeField()
 
 
-class PBSLogs(DynamicDocument):
+class PBSLogs(DynamicEmbeddedDocument):
     pass
     meta = {'collection': 'pbs_logs'}
 
@@ -41,17 +41,17 @@ class RoutineTiming(EmbeddedDocument):
 class RoutineList(Document):
     routine_timing = ListField(EmbeddedDocumentField(RoutineTiming))
 
-class JobGitDiff(Document):
+class JobGitDiff(EmbeddedDocument):
     changed_files = StringField()
     messages = ListField()
 
-class JobGitLog(Document):
+class JobGitLog(EmbeddedDocument):
     author = StringField()
     commit = StringField()
     date = DateTimeField()
     message = StringField()
 
-class JobPayu(Document):
+class JobPayu(EmbeddedDocument):
     control_dir = StringField()
     current_run = IntField()
     finish_time = DateTimeField()
@@ -90,23 +90,8 @@ class JobManifestInput(DynamicDocument):
 class JobManifestRestart(DynamicDocument):
     pass
 
-class PBSJob(Document):
-    pbs_job_id = StringField(required = True)
-    payu_run_id = StringField()
-    timestamp = ReferenceField(JobRunTimestamp)
-    pbs_logs = ReferenceField(PBSLogs)
-    routine = ReferenceField(RoutineList)
-    git_diff = ReferenceField(JobGitDiff)
-    git_log = ReferenceField(JobGitLog)
-    payu = ReferenceField(JobPayu)
-    manifest_restart = ReferenceField(JobManifestRestart)
-    file_path = ReferenceField(JobFilePath)
-    storage_in_gb = FloatField()
-    meta = {'collection': 'pbs_job'}
-
 
 class RunSummary(Document):
-    job_list = ListField(ReferenceField(PBSJob), required = True)
     diag = ReferenceField(JobDiag)
     namelist = ReferenceField(Namelist)
     config = ReferenceField(JobConfig)
@@ -116,4 +101,19 @@ class RunSummary(Document):
     contact = StringField()
     created = DateField()
     description = StringField()
+
+
+class PBSJob(Document):
+    pbs_job_id = StringField(required = True)
+    run_summary = ReferenceField(RunSummary)
+    timestamp = EmbeddedDocumentField(JobRunTimestamp)
+    pbs_logs = EmbeddedDocumentField(PBSLogs)
+    routine = ReferenceField(RoutineList)
+    git_diff = EmbeddedDocumentField(JobGitDiff)
+    git_log = EmbeddedDocumentField(JobGitLog)
+    payu = EmbeddedDocumentField(JobPayu)
+    manifest_restart = ReferenceField(JobManifestRestart)
+    file_path = ReferenceField(JobFilePath)
+    storage_in_gb = FloatField()
+    meta = {'collection': 'pbs_job'}
 

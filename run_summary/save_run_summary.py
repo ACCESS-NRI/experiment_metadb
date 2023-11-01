@@ -6,8 +6,8 @@ from utils import *
 from collections import defaultdict
 
 # TODO: remove DB uer details to env
-DB = "MODELS"
-SRV = ""
+DB = "EXPERIMENTS"
+SRV = "mongodb+srv://admin:HFcaqAVixm2SLouj@cluster0.byj6hew.mongodb.net/?retryWrites=true&w=majority"
 
 def connect_db():
     return connect(db=DB , host=SRV)
@@ -27,7 +27,6 @@ def save_job_timestamp(data):
     job_run_timestamp.run_length_in_seconds = data.get("Model run length (s)")
     job_run_timestamp.timestamp_file = data.get("Time stamp file")
     job_run_timestamp.start_time = data.get("Model start time")
-    job_run_timestamp.save()
     return job_run_timestamp
 
 def save_pbs_logs(data):
@@ -40,7 +39,6 @@ def save_dynamic_document(data, model):
         key = key.replace(".", " _dot_ ") #TODO: Change replace value
         fields[key] = value
     model.fields = fields
-    model.save()
     return model
 
 def save_routine_list(data):
@@ -64,7 +62,7 @@ def save_routine_list(data):
     return routine_list
 
 
-def save_run_common_dynamic_document(data, model, pbs_id, is_initial):
+def save_run_common_dynamic_document(data, model, id, is_initial):
     fields = {}
     if is_initial:
         for key, value in data.items():
@@ -76,7 +74,7 @@ def save_run_common_dynamic_document(data, model, pbs_id, is_initial):
         changed_values = defaultdict(dict)
         dict_value_change(data, model.fields, changed_values)
         if changed_values:
-            model.change_in_job.update({str(pbs_id):  changed_values})
+            model.change_in_job.update({str(id):  changed_values})
     model.save()
     return model
 
@@ -85,7 +83,6 @@ def save_git_diff(data):
     job_git_diff = JobGitDiff()
     job_git_diff.changed_files = data["Changed files"]
     job_git_diff.messages = (data["Messages"])
-    job_git_diff.save()
     return job_git_diff
 
 def save_git_log(data):
@@ -94,7 +91,6 @@ def save_git_log(data):
     job_git_log.commit = data["Commit"]
     job_git_log.date = data["Date"]
     job_git_log.message = data["Message"]
-    job_git_log.save()
     return job_git_log
 
 def save_payu(data):
@@ -108,13 +104,14 @@ def save_payu(data):
     job_payu.run_id = data.get("PAYU_RUN_ID")
     job_payu.start_time = data.get("PAYU_START_TIME")
     job_payu.wall_time_in_sec =  float(data.get("PAYU_WALLTIME").split()[0]) if data.get("PAYU_WALLTIME") != None else None
-    job_payu.save()
     return job_payu
 
 
 def save_manifest_restart(data):
     manifest_restart = JobManifestRestart()
-    return save_dynamic_document(data, manifest_restart)
+    save_dynamic_document(data, manifest_restart)
+    manifest_restart.save()
+    return manifest_restart
 
 
 def save_file_path(data, job_file_path, pbs_id, is_initial):
@@ -135,6 +132,7 @@ def save_file_path(data, job_file_path, pbs_id, is_initial):
 
 def save_to_db(data):
     run_summary = RunSummary()
+    run_summary.save()
     is_intial_state = True
     job_config = JobConfig()
     job_env = JobEnv()
@@ -146,7 +144,7 @@ def save_to_db(data):
     for key, value in data.items():
         print("Saving data for run id: ", key)
         pbs_job = PBSJob()
-        pbs_id = key
+        pbs_id = str(key)
         job_run_timestamp = save_job_timestamp(value["MOM_time_stamp.out"])
         pbs_logs = save_pbs_logs(value["PBS log"])
         job_git_diff = save_git_diff(value["git diff"])
@@ -161,10 +159,8 @@ def save_to_db(data):
         manifest_exec = save_run_common_dynamic_document(value["manifests/exe.yaml"], manifest_exec, pbs_id, is_intial_state)
         manifest_input = save_run_common_dynamic_document(value["manifests/input.yaml"], manifest_input, pbs_id, is_intial_state)
         job_file_path = save_file_path(value["paths"], job_file_path, pbs_id, is_intial_state)
-
-
+        pbs_job.run_summary = run_summary
         pbs_job.pbs_job_id = pbs_id
-        #pbs_job.payu_run_id = value["job.yaml"]["PAYU_RUN_ID"]
         pbs_job.timestamp = job_run_timestamp
         pbs_job.pbs_logs = pbs_logs
         pbs_job.routine = routine_list
@@ -176,7 +172,6 @@ def save_to_db(data):
         pbs_job.storage_in_gb = value["storage"]["Output path GiB"]
 
         pbs_job.save()
-        run_summary.job_list.append(pbs_job)
         is_intial_state = False
 
     metadata = data[list(data)[-1]]["metadata.yaml"]
