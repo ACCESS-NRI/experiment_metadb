@@ -10,7 +10,8 @@ import sys
 def get_catalog(catalog_name):
     catalog = intake.cat.access_nri
     catalog_filtered = catalog.search(name=catalog_name)
-    return catalog_filtered.to_source()
+    data_catalog = catalog_filtered.to_source()
+    return data_catalog.df[~((data_catalog.df.start_date == 'none') | (data_catalog.df.end_date == 'none'))]
 
 
 def get_coordinate_var(filename):
@@ -19,7 +20,7 @@ def get_coordinate_var(filename):
 
     
 def convert_column_to_cftime(data_catalog, column_name):
-    data_catalog.df[column_name].map(lambda date: cftime.datetime.strptime(
+    data_catalog[column_name].map(lambda date: cftime.datetime.strptime(
         date,format="%Y-%m-%d, %H:%M:%S", calendar='standard', has_year_zero=None))
 
 
@@ -29,7 +30,7 @@ def extract_plot_variables(data_catalog, realm_list, coordinate_var_dict):
     
     # Create list of variables in catalog for each realm and remove coordinates variable
     for realm in realm_list:
-        realm_vars = set(chain.from_iterable(data_catalog.df.loc[data_catalog.df['realm'] == realm].variable))
+        realm_vars = set(chain.from_iterable(data_catalog.loc[data_catalog['realm'] == realm].variable))
         if realm in coordinate_var_dict:
             realm_vars = realm_vars - set(coordinate_var_dict[realm])
         plot_variables[realm] = realm_vars
@@ -119,10 +120,11 @@ def save_var_timeseries_to_json(output_filename, data_catalog, catalog_name, tim
     with open(output_filename, "w") as outfile:
         json.dump({
             "name": catalog_name,
-            "model_start_date": data_catalog.df.start_date.iloc[0],
-            "model_end_date": data_catalog.df.end_date.iloc[-1],
+            "model_start_date": data_catalog.start_date.iloc[0],
+            "model_end_date": data_catalog.sort_values(by=['end_date']).end_date.iloc[-1],
             "realms": timeseries_grouped_var_data
         }, outfile, default=str)
+    print("output file created")
 
 
 def main():
@@ -136,10 +138,10 @@ def main():
     # Convert dates to cftime and sort by start_date and end_date
     convert_column_to_cftime(data_catalog, 'start_date')
     convert_column_to_cftime(data_catalog, 'end_date')
-    data_catalog.df.sort_values(by=['start_date', 'end_date'], inplace = True)
+    data_catalog.sort_values(by=['start_date', 'end_date'], inplace = True)
     
-    realm_list = data_catalog.df.realm.unique()
-    realm_freq_grp = data_catalog.df.groupby(['realm', 'frequency'], sort=False)
+    realm_list = data_catalog.realm.unique()
+    realm_freq_grp = data_catalog.groupby(['realm', 'frequency'], sort=False)
 
     plot_variables = extract_plot_variables(data_catalog, realm_list, coordinate_var_dict)
     

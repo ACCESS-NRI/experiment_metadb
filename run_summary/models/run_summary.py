@@ -101,6 +101,7 @@ class RunSummary(Document):
     contact = StringField()
     created = DateField()
     description = StringField()
+    experiment_uuid = StringField()
 
 
 class PBSJob(Document):

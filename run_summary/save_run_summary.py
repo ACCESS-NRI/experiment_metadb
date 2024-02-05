@@ -159,7 +159,7 @@ def save_to_db(data):
         manifest_exec = save_run_common_dynamic_document(value["manifests/exe.yaml"], manifest_exec, pbs_id, is_intial_state)
         manifest_input = save_run_common_dynamic_document(value["manifests/input.yaml"], manifest_input, pbs_id, is_intial_state)
         job_file_path = save_file_path(value["paths"], job_file_path, pbs_id, is_intial_state)
-        pbs_job.run_summary = run_summary
+        pbs_job.run_summary = value["metadata.yaml"]["experiment_uuid"]
         pbs_job.pbs_job_id = pbs_id
         pbs_job.timestamp = job_run_timestamp
         pbs_job.pbs_logs = pbs_logs
@@ -178,6 +178,7 @@ def save_to_db(data):
     run_summary.contact = metadata["contact"]
     run_summary.created = metadata["created"]
     run_summary.description = metadata["description"]
+    run_summary.experiment_uuid = metadata["experiment_uuid"]
     run_summary.manifest_exec = manifest_exec
     run_summary.manifest_input = manifest_input
     run_summary.diag = job_diag

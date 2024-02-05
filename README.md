@@ -1,7 +1,7 @@
 ## generate_variable_timeseries.py
 A script that generates the list of groups of variables that appers together in the same timeperiod for a given experiment
 
-```python3 gererate_variable_timeseries.py experiment_name coordinate_variable_file output_filename```
+```python3 generate_variable_timeseries.py experiment_name coordinate_variable_file output_filename```
 
 where coordinate_variable_file is a json file which contains list of coordinate variables for each realm and experiment_name is the name of a experiment present in intake catalog.
 

@@ -1,5 +1,5 @@
-import { COLLECTION, DATA_SOURCE, FILTER, OID, PBS_JOB, RUN_SUMMARY } from "../CONSTANTS"
-import { createDataAPIRequestInstance } from "./dataAPIConfig"
+import { COLLECTION, DATA_SOURCE, FILTER, PBS_JOB, RUN_SUMMARY } from "../CONSTANTS"
+import { createDataAPIRequestInstance } from "./apiConfig"
 import { FIND_ACTION } from "./url"
 
 const body = {
@@ -9,13 +9,12 @@ const body = {
     "database": "EXPERIMENTS",
 }
 
-export const getRunSummaryJobData = async (runSummaryId) => {
+export const fetchRunSummaryJobData = async (expUUID) => {
     body[COLLECTION] = PBS_JOB
     body[FILTER] = {
-        [RUN_SUMMARY] : {
-            [OID]: runSummaryId
-        }
+            [RUN_SUMMARY] : expUUID
     }
+    
     const api = await createDataAPIRequestInstance()
 
     //TODO: Call from generic function
