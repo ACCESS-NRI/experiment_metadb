@@ -241,7 +241,7 @@ export default function DataTimeline({ catalog, expVars, zoomSliderValue }) {
                     }
                 }
             }
-            return Object.keys(result).length === 0 ? null : result
+            return result
         } catch (error) {
             console.log(error)
         }
@@ -301,9 +301,10 @@ export default function DataTimeline({ catalog, expVars, zoomSliderValue }) {
     const realmChanged = (event) => {
         const realm = event.target.value
         setCurrentRealm(realm)
-        setSearchVarArray([])
-        setRealmFreqs(Object.keys(catalogData['realms'][realm]))
         setCurrentFreq("none")
+        setRealmFreqs(Object.keys(catalogData['realms'][realm]))
+        //setSearchResults({})
+        setSearchVarArray([])
     }
 
     const freqChanged = (event) => {
