@@ -141,8 +141,12 @@ def save_to_db(data):
     manifest_input = JobManifestInput()
     namelist = Namelist()
     job_file_path = JobFilePath()
+    index = 0
+    total_run = len(data)
     for key, value in data.items():
-        print("Saving data for run id: ", key)
+        index = index + 1
+        if (index%20 == 0):
+            print("Saving data for index: ", index, "/", total_run)
         pbs_job = PBSJob()
         pbs_id = str(key)
         job_run_timestamp = save_job_timestamp(value["MOM_time_stamp.out"])

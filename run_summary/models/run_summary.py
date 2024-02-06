@@ -106,7 +106,7 @@ class RunSummary(Document):
 
 class PBSJob(Document):
     pbs_job_id = StringField(required = True)
-    run_summary = ReferenceField(RunSummary)
+    run_summary = StringField(required = True)
     timestamp = EmbeddedDocumentField(JobRunTimestamp)
     pbs_logs = EmbeddedDocumentField(PBSLogs)
     routine = ReferenceField(RoutineList)
