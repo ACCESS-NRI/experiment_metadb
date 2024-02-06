@@ -3,7 +3,7 @@ from sqlalchemy import (
     Integer, Text, Index, String, Column, ForeignKey, Table, ARRAY, Float)
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, Mapped, sessionmaker, mapped_column
+from sqlalchemy.orm import relationship, Mapped, sessionmaker
 from typing import List
 
 #TODO: move the connection details to env variables
@@ -30,6 +30,25 @@ exp_vars = Table(
     Column("variables", ForeignKey("variables.id"))
 )
 
+class Variable(Base):
+    __tablename__ = "variables"
+    __table_args__ = (
+        Index(
+            "ix_variables_name_long_name_units",
+            "name",
+            "long_name",
+            "units",
+            unique=True,
+        ),
+    )
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, index=True)
+    long_name = Column(String)
+    standard_name = Column(String)
+    units = Column(String)
+
+
 class Experiment(Base):
     __tablename__ = "experiments"
 
@@ -41,7 +60,7 @@ class Experiment(Base):
 
     # Fields taken from catalog metadata available at 
     # https://access-nri-intake-catalog.readthedocs.io/en/latest/management/building.html#metadata-yaml-files
-    id = mapped_column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     experiment_uuid = Column(String)
     description = Column(Text)
@@ -62,23 +81,5 @@ class Experiment(Base):
     notes = Column(Text)
     keywords = Column(ARRAY(String))
     variables:Mapped[List[Variable]] = relationship(
-        secondary=exp_vars
+        Variable, secondary=exp_vars
     )
-
-class Variable(Base):
-    __tablename__ = "variables"
-    __table_args__ = (
-        Index(
-            "ix_variables_name_long_name_units",
-            "name",
-            "long_name",
-            "units",
-            unique=True,
-        ),
-    )
-
-    id = mapped_column(Integer, primary_key=True)
-    name = Column(String, nullable=False, index=True)
-    long_name = Column(String)
-    standard_name = Column(String)
-    units = Column(String)
