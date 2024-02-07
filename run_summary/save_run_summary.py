@@ -7,7 +7,7 @@ from collections import defaultdict
 
 # TODO: remove DB uer details to env
 DB = "EXPERIMENTS"
-SRV = "mongodb+srv://admin:HFcaqAVixm2SLouj@cluster0.byj6hew.mongodb.net/?retryWrites=true&w=majority"
+SRV = ""
 
 def connect_db():
     return connect(db=DB , host=SRV)
