@@ -1,0 +1,23 @@
+{
+    "title": "job_run_timestamp",
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "end_date": {
+            "bsonType": "date"
+        },
+        "run_length_in_days": {
+            "bsonType": "double"
+        },
+        "run_length_in_seconds": {
+            "bsonType": "double"
+        },
+        "start_time": {
+            "bsonType": "date"
+        },
+        "timestamp_file": {
+            "bsonType": "string"
+        }
+    }
+}

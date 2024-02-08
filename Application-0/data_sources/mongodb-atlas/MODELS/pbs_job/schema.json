@@ -1,0 +1,41 @@
+{
+    "title": "pbs_job",
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "file_path": {
+            "bsonType": "objectId"
+        },
+        "git_diff": {
+            "bsonType": "objectId"
+        },
+        "git_log": {
+            "bsonType": "objectId"
+        },
+        "manifest_restart": {
+            "bsonType": "objectId"
+        },
+        "payu": {
+            "bsonType": "objectId"
+        },
+        "payu_run_id": {
+            "bsonType": "string"
+        },
+        "pbs_job_id": {
+            "bsonType": "string"
+        },
+        "pbs_logs": {
+            "bsonType": "objectId"
+        },
+        "routine": {
+            "bsonType": "objectId"
+        },
+        "storage_in_gb": {
+            "bsonType": "double"
+        },
+        "timestamp": {
+            "bsonType": "objectId"
+        }
+    }
+}

@@ -1,0 +1,44 @@
+{
+    "file_path": {
+        "ref": "#/relationship/mongodb-atlas/MODELS/job_file_path",
+        "source_key": "file_path",
+        "foreign_key": "_id",
+        "is_list": false
+    },
+    "git_diff": {
+        "ref": "#/relationship/mongodb-atlas/MODELS/job_git_diff",
+        "source_key": "git_diff",
+        "foreign_key": "_id",
+        "is_list": false
+    },
+    "git_log": {
+        "ref": "#/relationship/mongodb-atlas/MODELS/job_git_log",
+        "source_key": "git_log",
+        "foreign_key": "_id",
+        "is_list": false
+    },
+    "manifest_restart": {
+        "ref": "#/relationship/mongodb-atlas/MODELS/job_manifest_restart",
+        "source_key": "manifest_restart",
+        "foreign_key": "_id",
+        "is_list": false
+    },
+    "payu": {
+        "ref": "#/relationship/mongodb-atlas/MODELS/job_payu",
+        "source_key": "payu",
+        "foreign_key": "_id",
+        "is_list": false
+    },
+    "routine": {
+        "ref": "#/relationship/mongodb-atlas/MODELS/routine_list",
+        "source_key": "routine",
+        "foreign_key": "_id",
+        "is_list": false
+    },
+    "timestamp": {
+        "ref": "#/relationship/mongodb-atlas/MODELS/job_run_timestamp",
+        "source_key": "timestamp",
+        "foreign_key": "_id",
+        "is_list": false
+    }
+}

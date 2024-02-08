@@ -1,0 +1,14 @@
+{
+    "title": "job_manifest_exec",
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "change_in_job": {
+            "bsonType": "string"
+        },
+        "fields": {
+            "bsonType": "string"
+        }
+    }
+}
