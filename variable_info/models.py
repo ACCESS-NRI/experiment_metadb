@@ -1,6 +1,6 @@
 from __future__ import annotations
 from sqlalchemy import (
-    Integer, Text, Index, String, Column, ForeignKey, Table, ARRAY, Float)
+    Integer, Text, Index, String, Column, ForeignKey, Table, ARRAY, Float, UniqueConstraint)
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Mapped, sessionmaker
@@ -18,16 +18,25 @@ def create_session():
 
     engine = create_engine(CONNSTR)
     Base.metadata.create_all(engine)
-
-    Session = sessionmaker(bind=engine, autoflush=False)
-    return Session()
+    session = sessionmaker(bind=engine, autoflush=False)
+    return session()
 
 exp_vars = Table(
-    "expVars",
+    "exp_variables",
     Base.metadata,
     Column("id", Integer, primary_key=True),
     Column("experiments", ForeignKey("experiments.id")),
-    Column("variables", ForeignKey("variables.id"))
+    Column("variables", ForeignKey("variables.id")),
+    UniqueConstraint('experiments', 'variables', name='uix_1')
+)
+
+model_coordinate_variables = Table(
+    "model_coordinate_variables",
+    Base.metadata,
+    Column("id", Integer, primary_key=True),
+    Column("model_name", ForeignKey("models.name")),
+    Column("variable_id", ForeignKey("variables.id")),
+    UniqueConstraint('model_name', 'variable_id', name='uix_1')
 )
 
 class Variable(Base):
@@ -48,6 +57,13 @@ class Variable(Base):
     standard_name = Column(String)
     units = Column(String)
 
+
+class Model(Base):
+    __tablename__ = "models"
+    name = Column(String, primary_key=True)
+    coordinate_variables:Mapped[List[Variable]] = relationship(
+        Variable, secondary=model_coordinate_variables
+    )
 
 class Experiment(Base):
     __tablename__ = "experiments"

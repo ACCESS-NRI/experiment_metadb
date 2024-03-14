@@ -3,6 +3,7 @@ from models import *
 import sys
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
+#TODO: Rewrite the script to handle Model Table
 def get_catalog(catalog_name):
     catalog = intake.cat.access_nri
     catalog_filtered = catalog.search(name=catalog_name)
