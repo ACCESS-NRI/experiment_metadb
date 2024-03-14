@@ -1,12 +1,8 @@
-exports = async function({ query, headers, body}, response){
+exports = async function(experimentData){
   
-    const {data, expUUID} = JSON.parse(body.text());
+    const {data, expUUID} = experimentData;
     
-    if(body === undefined) {
-      throw new Error(`Request body was not defined.`)
-    }
-    
-    
+    console.log("Exp", expUUID)
     const serviceName = "mongodb-atlas"
     const dbName = "TEST"
     const client = context.services.get(serviceName)
@@ -124,7 +120,6 @@ exports = async function({ query, headers, body}, response){
               }   
               for (let k of old_dict_keys) {
                 const unmodified_key = k.replace(' _dot_ ', '.');
-                                  console.log(unmodified_key)
                 if (!new_dict_keys.includes(unmodified_key)) {
                     if (changed_values['removed'] === undefined)
                       changed_values['removed'] = {}
@@ -211,8 +206,8 @@ exports = async function({ query, headers, body}, response){
               if (namelist_change)
                 await db.collection("namelist").updateOne({"_id": experiment.namelist},{"$set": {[fieldToUpdate]: namelist_change}}, { session })
                 
-              response.setStatusCode(200);
-              response.setBody("experiment data added");
+              // response.setStatusCode(200);
+              // response.setBody("experiment data added");
   
           } else {
             const [config, diag, env, manifestExec, manifestInput, namelist] = await Promise.all([
@@ -229,7 +224,7 @@ exports = async function({ query, headers, body}, response){
                 db.collection("namelist").insertOne(getFields(job_data["namelists"]),
                 { session })
             ])
-
+              console.log("^^^^^^", expUUID)
               await db.collection("run_summary").insertOne({
                 experiment_uuid: expUUID,
                 config: config.insertedId, 
@@ -242,17 +237,17 @@ exports = async function({ query, headers, body}, response){
                 created: job_data["metadata.yaml"]["created"],
                 description: job_data["metadata.yaml"]["description"],
               }, { session })
-              response.setStatusCode(200);
-              response.setBody("new experiment created");
+              // response.setStatusCode(200);
+              // response.setBody("new experiment created");
           }
   
        }
      })
    }  catch (err) {
-      console.log(err)
+      console.log("err: ",err)
       await session.abortTransaction();
-      response.setStatusCode(400);
-      response.setBody(err.message);
+      // response.setStatusCode(400);
+      // response.setBody(err.message);
     } finally {
       await session.endSession();
     }

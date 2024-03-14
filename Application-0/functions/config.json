@@ -5,7 +5,7 @@
         "can_evaluate": {}
     },
     {
-        "name": "add_experiment",
+        "name": "addExperimentCliTest",
         "private": false,
         "run_as_system": true,
         "disable_arg_logs": true
@@ -13,6 +13,11 @@
     {
         "name": "addRunSummaryData",
         "private": false,
+        "can_evaluate": {
+            "%%request.remoteIPAddress": {
+                "$in": "%%values.nciIPAddresses"
+            }
+        },
         "disable_arg_logs": true
     }
 ]

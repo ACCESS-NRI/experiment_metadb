@@ -40,3 +40,5 @@ frontend/next-env.d.ts
 /run_summary/models/__pycache__
 
 /variable_info/__pycache__
+
+/Application-0/.mdb/
