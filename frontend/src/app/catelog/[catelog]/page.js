@@ -59,9 +59,9 @@ export default function Experiment({ params }) {
                 trigger={<TriggerComponent text="Metadata" />}>
                     {/* TODO: Remove iteration */}
                     {experimentData && Object.keys(experimentData).map(field => {
-                        if (field != "expVars")
+                        if (field != "exp_variables")
                         return (
-                            <p style={{fontSize: 24, fontWeight:700}}>{`${field}:   `} 
+                            <p key={field} style={{fontSize: 24, fontWeight:700}}>{`${field}:   `} 
                                 <span style={{fontSize: 18, fontWeight: 400}}>
                                     {experimentData[field]}
                                 </span></p>
@@ -76,7 +76,7 @@ export default function Experiment({ params }) {
                     <div>
                         <p style={{ fontSize: 24, fontWeight: 700 }}>{DATA_TIMELINE_DESCRIPTION}</p>
                         <DataTimeline catalog={params.catelog} zoomSliderValue={zoomSliderValue}
-                            expVars={experimentData ? experimentData.expVars : null}/>
+                            expVars={experimentData ? experimentData.exp_variables : null}/>
                     </div>
                     
             </Collapsible>

@@ -9,7 +9,7 @@ export const NECTAR_AUTH = "https://keystone.rc.nectar.org.au:5000/v3/auth/token
 export const NECTOR_OBJECT_STORE = "https://object-store.rc.nectar.org.au/v1/AUTH_685340a8089a4923a71222ce93d5d323/experiment-variable-timeline/"
 
 //Hausra
-export const HASURA_BASE_URL = "https://boss-thrush-10.hasura.app/api/rest"
+export const HASURA_BASE_URL = "https://sincere-slug-43.hasura.app/api/rest"
 export const GET_EXPERIMENT_LIST = "/get-experiment-list"
-export const GET_EXPERIMENT_DATA = "/get-experiment-data"
+export const GET_EXPERIMENT_DATA = "/get-experiment-by-name"
 export const SEARCH_EXPERIMENT = "/search-experiment"

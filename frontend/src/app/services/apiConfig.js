@@ -17,9 +17,8 @@ const createAxiosRequest = (baseURL) => {
 // defining a custom error handler for all APIs
 const errorHandler =  async (error, service) => {
   const statusCode = error.response?.status
-
   // logging only errors that are not 401
-  if (statusCode && statusCode !== 401) {
+  if (statusCode !== 401) {
     console.error(error)
   } else {
     const originalRequest = error.config
@@ -33,16 +32,13 @@ const errorHandler =  async (error, service) => {
     
     if (service === MONGO) {
         apiRequest = await createDataAPIRequestInstance()
-    } else if (service === NECTAR) {
-        apiRequest = await createNectarObjectStoreAPIRequestInstance()
-    }
-
-    return apiRequest.request({
-      method: originalRequest.method,
-      url: originalRequest.url,
-      data: originalRequest.data,
-      _retry:  true
-    })
+        return apiRequest.request({
+            method: originalRequest.method,
+            url: originalRequest.url,
+            data: originalRequest.data,
+            _retry:  true
+          })
+    } 
   }
 
   return Promise.reject(error)
