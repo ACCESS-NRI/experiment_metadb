@@ -1,57 +1,28 @@
-# General Repository Template
+## generate_variable_timeseries.py
+A script that generates the list of groups of variables that appers together in the same timeperiod for a given experiment
 
-A general template repository for default settings when creating new repositories.
+```python3 generate_variable_timeseries.py experiment_name coordinate_variable_file output_filename```
 
-This repository uses the Apache-2.0 license. `COPYRIGHT.txt` contains a current copyright statement which should be included at the top of all files.
+where coordinate_variable_file is a json file which contains list of coordinate variables for each realm and experiment_name is the name of a experiment present in intake catalog.
 
-When creating a new repository you [can use this repository as a template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template), to automate the creation of the correct license and COPYRIGHT statement.
+## frontend
+A next.js web app to display variable timeseries graphs
 
-## COPYRIGHT Header
+To host frontend on vercel:
+1. Create a [vercel account](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) and connect this repo.
+2. Navigate to the project in vercel dashboard and go to project setting
+3. In root directory (under general menu) add 'frontend'.
+4. In the git menu change the branch of deployment.
+5. New commit will be deployed from this brach. To deploy current commit use [vercel-cli](https://vercel.com/docs/cli/deploying-from-cli)
 
-Best practice suggests adding a copyright statement at the top of every source code file, or text file where it is possible to add a copyright statement without interfering with the purpose of the file. The reasoning is if a file is separated from the repository in which it resides then it may not be possible to ascertain it's licensing, which may hamper re-use.
+## variable_info
 
-Making this as short and concise as possible reduces the overhead in including such a copyright statement. To that end using [SPDX identifiers](https://spdx.dev/ids/) is simple, efficient, portable and machine-readable.
+Contains model and script to add variable details for an experiment. To add variable info for new experiment
 
-### Examples
+```python3 save_exp_var.py experiment_name```
 
-An example, short, copyright statement is reproduced below, as it might appear in different coding languages. Copy and add to files as appropriate: 
+where experiment_name is the name of a experiment present in intake catalog.
 
-#### plaintext
-It is common to include copyright statements at the bottom of a text document or website page
-```text
-© 2022 ACCESS-NRI and contributors. See the top-level COPYRIGHT file for details. 
-SPDX-License-Identifier: Apache-2.0
-```
+## run_summary
 
-#### python
-For code it is more common to include the copyright in a comment at the top
-```python
-# Copyright 2022 ACCESS-NRI and contributors. See the top-level COPYRIGHT file for details.
-# SPDX-License-Identifier: Apache-2.0
-```
-
-#### shell
-```bash
-# Copyright 2022 ACCESS-NRI and contributors. See the top-level COPYRIGHT file for details.
-# SPDX-License-Identifier: Apache-2.0
-```
-
-##### FORTRAN
-```fortran
-! Copyright 2022 ACCESS-NRI and contributors. See the top-level COPYRIGHT file for details.
-! SPDX-License-Identifier: Apache-2.0
-```
-
-#### C/C++ 
-```c
-// Copyright 2022 ACCESS-NRI and contributors. See the top-level COPYRIGHT file for details.
-// SPDX-License-Identifier: Apache-2.0
-```
-
-### Notes
-
-Note that the date is the first time the project is created. 
-
-The date signifies the year from which the copyright notice applies. **NEVER** replace with a later year, only ever add later years or a year range. 
-
-It is not necessary to include subsequent years in the copyright statement at all unless updates have been made at a later time, and even then it is largely discretionary: they are not necessary as copyright is contingent on the lifespan of copyright holder +50 years as per the [Berne Convention](https://en.wikipedia.org/wiki/Berne_Convention).
+Conatins model and script to add run_summay for through a yaml file
