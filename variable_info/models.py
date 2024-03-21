@@ -9,7 +9,7 @@ from typing import List
 #TODO: move the connection details to env variables
 USERNAME = ""
 PASSWORD = ""
-HOST = ""
+HOST = "ep-summer-frost-03430523.ap-southeast-1.aws.neon.tech"
 CONNSTR = f'postgresql://{USERNAME}:{PASSWORD}@{HOST}/EXPERIMENT'
 
 Base = declarative_base()
