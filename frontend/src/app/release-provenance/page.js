@@ -26,7 +26,7 @@ export default function ReleaseProvenance () {
         return ({
             detailGridOptions: {
                 columnDefs: [
-                    { headerName: 'Component Name',  flex: 1,
+                    { headerName: 'Name',  flex: 1,
                         valueGetter: (p) => p.data.component_build_info.spec.split("@")[0] },
                     { headerName: 'Version',  flex: 1,
                         valueGetter: (p) => p.data.component_build_info.spec.split("=")[1] },
