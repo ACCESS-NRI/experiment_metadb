@@ -13,20 +13,24 @@ import Link from "next/link";
 export default function ReleaseProvenance () {
     const [modelList, setModelList] = useState([])
     const modelColDefs = useMemo(() => [
-        { headerName: 'Name', field: 'spec', 
-            valueFormatter: (p) => p.value.split("@")[0], flex: .5 },
-        { headerName: 'Version', field: 'spec', cellRenderer: (p) => <Link href={p.data.release_url}>{p.value.split("git.")[1]}</Link>, flex: .5  },
-        { headerName: 'Spack Hash', field: 'spack_hash' },
-        { headerName: 'Spack Version', field: 'spack_version' },
-        { headerName: 'Created At', field: 'created_at', valueFormatter: p => new Date(p.value).toLocaleString() },
+        { headerName: 'Name', valueGetter: (p) => p.data.spec.split("@")[0]},
+        { headerName: 'Version', 
+            valueGetter: (p) => p.data.spec.split("=")[1],
+            cellRenderer: (p) => <Link href={p.data.release_url}>{p.value}</Link> },
+        { headerName: 'Spack Hash', valueGetter: (p) => p.data.spack_hash.substring(0,8) },
+        { headerName: 'Spack Version', valueGetter: (p) => p.data.spack_version.substring(0,8) },
+        { headerName: 'Created At', valueGetter: p => new Date(p.data.created_at).toLocaleString() },
         { headerName: 'Model Components', cellRenderer: "agGroupCellRenderer", flex:.5 },
     ], []);
     const detailCellRendererParams = useMemo(() => {
         return ({
             detailGridOptions: {
                 columnDefs: [
-                    { headerName: 'Install Path', field: 'component_build_info.install_path', flex: 3 },
-                    { headerName: 'Spec', field: 'component_build_info.spec', flex: 1 },
+                    { headerName: 'Component Name',  flex: 1,
+                        valueGetter: (p) => p.data.component_build_info.spec.split("@")[0] },
+                    { headerName: 'Version',  flex: 1,
+                        valueGetter: (p) => p.data.component_build_info.spec.split("=")[1] },
+                    { headerName: 'Install Path', field: 'component_build_info.install_path', flex: 7 },
                     { headerName: 'Spack Hash', field: 'component_build_info.spack_hash', flex: 1 }
                 ]
             },
