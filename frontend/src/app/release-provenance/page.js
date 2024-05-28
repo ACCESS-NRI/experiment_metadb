@@ -16,11 +16,12 @@ export default function ReleaseProvenance () {
         { headerName: 'Name', valueGetter: (p) => p.data.spec.split("@")[0]},
         { headerName: 'Version', 
             valueGetter: (p) => p.data.spec.split("=")[1],
-            cellRenderer: (p) => <Link href={p.data.release_url}>{p.value}</Link> },
+            cellRenderer: (p) => <Link target="_blank" href={p.data.release_url}>{p.value}</Link> },
         { headerName: 'Spack Hash', valueGetter: (p) => p.data.spack_hash.substring(0,8) },
         { headerName: 'Spack Version', valueGetter: (p) => p.data.spack_version.substring(0,8) },
-        { headerName: 'Created At', valueGetter: p => new Date(p.data.created_at).toLocaleString() },
-        { headerName: 'Model Components', cellRenderer: "agGroupCellRenderer", flex:.5 },
+        { headerName: 'Created At', valueGetter: p => new Date(p.data.created_at).toLocaleString(), filter: false,
+    },
+        { headerName: 'Model Components', cellRenderer: "agGroupCellRenderer", flex:.5, filter: false },
     ], []);
     const detailCellRendererParams = useMemo(() => {
         return ({
@@ -29,7 +30,12 @@ export default function ReleaseProvenance () {
                     { headerName: 'Name',  flex: 1,
                         valueGetter: (p) => p.data.component_build_info.spec.split("@")[0] },
                     { headerName: 'Version',  flex: 1,
-                        valueGetter: (p) => p.data.component_build_info.spec.split("=")[1] },
+                        valueGetter: (p) => p.data.component_build_info.spec.split("=")[1],
+                        cellRenderer: (p) => 
+                                    <Link target="_blank"
+                                        href={`https://github.com/ACCESS-NRI/${p.data.component_build_info.spec.split("@")[0]}/releases/tag/${p.value}`}>
+                                        {p.value}
+                                    </Link>},
                     { headerName: 'Install Path', field: 'component_build_info.install_path', flex: 7 },
                     { headerName: 'Spack Hash', field: 'component_build_info.spack_hash', flex: 1 }
                 ]
