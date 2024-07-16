@@ -47,8 +47,5 @@ export const fetchModelBuildList = async (searchText) => {
     return await api.request({
         method: 'get',
         url: GET_MODEL_BUILD_LIST,
-        params: {
-            "searchText": searchText
-        }
     })
 }

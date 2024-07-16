@@ -17,6 +17,7 @@ export default function ReleaseProvenance () {
         { headerName: 'Version', 
             valueGetter: (p) => p.data.spec.split("=")[1],
             cellRenderer: (p) => <Link target="_blank" href={p.data.release_url}>{p.value}</Link> },
+        { headerName: 'Status', valueGetter: (p) => p.data.status },
         { headerName: 'Spack Hash', valueGetter: (p) => p.data.spack_hash.substring(0,8) },
         { headerName: 'Spack Version', valueGetter: (p) => p.data.spack_version.substring(0,8) },
         { headerName: 'Created At', valueGetter: p => new Date(p.data.created_at).toLocaleString(), filter: false,
