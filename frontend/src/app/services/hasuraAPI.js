@@ -1,5 +1,7 @@
 import { createHasuraAPIRequestInstance } from "./apiConfig"
-import { GET_EXPERIMENT_DATA, GET_EXPERIMENT_LIST, SEARCH_EXPERIMENT } from "./url"
+import { GET_EXPERIMENT_DATA, GET_EXPERIMENT_LIST, GET_MODEL_BUILD_LIST, SEARCH_EXPERIMENT } from "./url"
+
+//TODO: Combine all the fetch functions in a single generic function with different arguments
 
 export const fetchExperimentList = async () => {
 
@@ -35,5 +37,15 @@ export const fetchSearchResult = async (searchText) => {
         params: {
             "searchText": searchText
         }
+    })
+}
+
+export const fetchModelBuildList = async (searchText) => {
+    const api = await createHasuraAPIRequestInstance()
+    
+    //TODO: Call from generic function
+    return await api.request({
+        method: 'get',
+        url: GET_MODEL_BUILD_LIST,
     })
 }

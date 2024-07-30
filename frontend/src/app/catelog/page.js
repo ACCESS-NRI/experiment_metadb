@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ACCESS_EXPERIMENTS, EXPERIMENT_LIST_DESCRIPTION, EXPERIMENT_TEXT, EXPLORE_TEXT, SEARCH_TEXT } from "../CONSTANTS";
 import { fetchExperimentList, fetchSearchResult } from "../services/hasuraAPI";
-import { redirect } from "next/dist/server/api-utils";
 
 export default function CatelogList() {
     const [experimentList, setExperimentList] = useState(null)
