@@ -34,7 +34,7 @@ export default function ReleaseProvenance () {
                         valueGetter: (p) => p.data.component_build_info.spec.split("=")[1],
                         cellRenderer: (p) => 
                                     <Link target="_blank"
-                                        href={`https://github.com/ACCESS-NRI/${p.data.component_build_info.spec.split("@")[0]}/releases/tag/${p.value}`}>
+                                        href={p.data.component_build_info.release_url}>
                                         {p.value}
                                     </Link>},
                     { headerName: 'Install Path', field: 'component_build_info.install_path', flex: 7 },
