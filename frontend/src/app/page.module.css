@@ -6,7 +6,7 @@
 
 .logo {
   position: relative;
-  height: 80%;
+  height: 100%;
   aspect-ratio: 1;
   margin-right: 1em;
   box-sizing: border-box;
@@ -24,6 +24,8 @@
   color: white;
   line-height: 0.6;
   text-overflow: wrap;
+  padding: 0.8rem;
+  box-sizing: border-box;
 }
 
 .title {
