@@ -15,7 +15,7 @@ export default function Home() {
     </div>
     <div className={`${classes.cardContainer} ${classes.dongle}`}>
       <Link href="/catelog" className={classes.card}>Experiments Catalog</Link>
-      <Link href="/release-provenance" className={classes.card}>ACCESS-NRI Releases Provenance</Link>
+      <Link href="/release-provenance" className={classes.card}>Model Build Database</Link>
     </div>
   </>
   )
