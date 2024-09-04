@@ -10,12 +10,12 @@ export default function Home() {
         <Image src="/ACCESS-NRI_logo.png" alt="ACCESS-NRI_logo" fill />
       </div>
       <div className={`${classes.title} ${classes.dongle}`}>
-        ACCESS-NRI Data Explorer
+        ACCESS-NRI Data Explorer (experimental prototype)
       </div>
     </div>
     <div className={`${classes.cardContainer} ${classes.dongle}`}>
-      <Link href="/catelog" className={classes.card}>Experiments Catalog</Link>
       <Link href="/release-provenance" className={classes.card}>Model Build Database</Link>
+      <Link href="/catelog" className={classes.card}>Experiments Catalog</Link>
     </div>
   </>
   )
